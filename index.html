@@ -84,12 +84,12 @@
             });
 
             cursors = this.input.keyboard.createCursorKeys();
-
             isFlipping = false; 
         }
 
         function update() {
             player.setVelocityX(0);
+
             let isTouch = player.body.blocked.down || player.body.touching.down;
 
             if (cursors.left.isDown) {
