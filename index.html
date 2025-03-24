@@ -89,15 +89,17 @@
 
         function update() {
             player.setVelocityX(0);
-
             let isTouch = player.body.blocked.down || player.body.touching.down;
+            let flipDirection = 360; 
 
             if (cursors.left.isDown) {
                 player.setVelocityX(-200);
                 player.anims.play("left", true);
+               flipDirection = -360; 
             } else if (cursors.right.isDown) {
                 player.setVelocityX(200);
                 player.anims.play("right", true);
+                flipDirection = 360;
             } else {
                 player.setVelocityX(0);
                 player.anims.play("turn");
@@ -109,16 +111,17 @@
 
                 player.scene.tweens.add({
                     targets: player,
-                    angle: 360,
-                    duration: 600,
+                    angle: flipDirection,
+                    duration: 600, 
                     ease: 'Cubic.easeOut',
                     onComplete: () => {
-                        player.setAngle(0);
-                        isFlipping = false;
+                        player.setAngle(0); 
+                        isFlipping = false; 
                     }
                 });
             }
         }
+
     </script>
 </body>
 
