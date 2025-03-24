@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./assets/phaser@3.55.2.min.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 640,
+            height: 480,
+            scale: {
+                autoCenter: Phaser.Scale.CENTER_BOTH
+            },
+
+            pixelArt: true,
+            physics: {
+                default: "arcade",
+                arcade: {
+                    gravity: { y: 800 },
+                },
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update,
+            },
+        };
+
+        const game = new Phaser.Game(config);
+        let platforms,
+            player,
+            cursors
+
+        function preload() {
+            // 練習先前學過的經驗，將background.png、platform.png、ice-platform.png、dude.png資料匯入
+            this.load.image("background", "assets/background.png");
+            this.load.image("trees", "assets/trees.png");
+            this.load.image("clouds", "assets/clouds.png");
+            this.load.image("platform", "assets/platform.png");
+            this.load.image("ice-platform", "assets/ice-platform.png");
+            this.load.spritesheet("dude", "assets/dude.png", {
+                frameWidth: 32,
+                frameHeight: 48,
+            });
+            this.load.image("red", "assets/red.png");
+            this.load.image("blue", "assets/blue.png");
+        }
+
+        function create() {
+            // 繪製背景天空
+            this.add.sprite(0, 0, "background").setOrigin(0);
+            // 建立會動的dude
+            player = this.physics.add
+                .sprite(320, 240, "dude")
+                .setCollideWorldBounds(true)
+                .setName("dude");
+            // .setBounce(0.2);
+
+            // 建立dude動畫
+this.anims.create({
+ key:"left",
+ frames: this.anims.generateFrameNumbers("dude", { start: 0, end: 3 }),
+ frameRate: 10,
+ repeat:-1,
+ });
+ this.anims.create({
+ key: "turn",
+ frames: [{ key: "dude", frame: 4 }],
+ frameRate:20,
+ });
+ this.anims.create({
+ key: "right",
+ frames: this.anims.generateFrameNumbers("dude", { start: 5, end: 8 }),
+ frameRate: 10,
+ repeat:-1,
+ });
+ cursors = this.input.keyboard.createCursorKeys();
+        }
+        cursors = this.input.keyboard.createCursorKeys();
+
+        function update() {
+            player.setVelocityX(0);
+ let isTouch = player.body.blocked.down || player.body.touching.down;
+ if (cursors.left.isDown) {
+ player.setVelocityX(-200);
+ player.anims.play("left", true);
+ } else if (cursors.right.isDown) {
+ player.setVelocityX(200);
+ player.anims.play("right", true);
+ } else {
+ player.setVelocityX(0);
+ player.anims.play("turn");
+ }
+ // 增加判斷是否翻轉中
+      if(cursors.up.isDown && isTouch && !isFlipping) {
+ isFlipping = true;
+ player.setVelocityY(-500);
+ // 使用tweens補間動畫設計翻轉效果
+        this.tweens.add({
+ targets: player,
+ angle:360,
+          duration: 600, // 翻轉時間設定為0.6 秒
+          ease: 'Cubic.easeOut', // 使用easeOut速率曲線
+          onComplete: () => { // 翻轉完成後執行
+            player.setAngle(0); // 回復原本玩家角度
+            isFlipping = false; // 重置翻轉狀態
+          }
+        });
+      }
+        }
+    </script>
+</body>
+
+</html>
